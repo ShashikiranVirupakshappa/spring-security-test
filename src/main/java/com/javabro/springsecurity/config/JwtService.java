@@ -57,7 +57,6 @@ public class JwtService {
         return extractClaim(jwtToken, Claims::getExpiration);
     }
 
-
     public Claims extractAllClaims(String jwtToken) {
         Jwts.parserBuilder()
                 .setSigningKey(signingKey())

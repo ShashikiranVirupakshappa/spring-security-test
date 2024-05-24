@@ -44,27 +44,26 @@ public class JwtService {
 
     public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
         String username = extractUsername(jwtToken);
-        if(username.equals(userDetails.getUsername()) && isTokenExpired(jwtToken) )
+        if(username.equals(userDetails.getUsername()) && !isTokenExpired(jwtToken))
             return true;
         return false;
     }
 
     private boolean isTokenExpired(String jwtToken) {
-        return extactExpiration(jwtToken).before(new Date(System.currentTimeMillis()));
+        return extractExpiration(jwtToken).before(new Date(System.currentTimeMillis()));
     }
 
-    private Date extactExpiration(String jwtToken) {
+    private Date extractExpiration(String jwtToken) {
         return extractClaim(jwtToken, Claims::getExpiration);
     }
 
     public Claims extractAllClaims(String jwtToken) {
-        Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(signingKey())
                 .build()
                 .parseClaimsJws(jwtToken)
-                .getBody()
-                .get("username");
-        return null;
+                .getBody();
+
     }
 
     private Key signingKey() {

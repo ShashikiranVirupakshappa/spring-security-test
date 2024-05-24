@@ -26,7 +26,7 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(authenticationService.register(registerRequest));
     }
 
-    @PostMapping("/")
+    @PostMapping("/token")
     public ResponseEntity<AuthenticationResponse> getToken(@RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).body(authenticationService.getToken(authenticationRequest));
     }

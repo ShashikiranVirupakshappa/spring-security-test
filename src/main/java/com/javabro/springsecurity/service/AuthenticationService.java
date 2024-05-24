@@ -13,9 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,15 +45,20 @@ public class AuthenticationService {
         user.setRoles(roleList);
         userRepository.save(user);
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setToken(jwtService.generateToken(user));
+        Map<String, Object> map = new HashMap<>();
+        map.put("roles", user.getRoles());
+        authenticationResponse.setToken(jwtService.generateToken(map, user));
         return authenticationResponse;
     }
 
     public AuthenticationResponse getToken(@RequestBody AuthenticationRequest authenticationRequest) {
         Optional<User> optionalUser = userRepository.findByUsername(authenticationRequest.getUsername());
         User user = optionalUser.orElseThrow();
+        Map<String, Object> roleClaimMap = new HashMap<>() ;
+        roleClaimMap.put("roles", user.getRoles());
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        if (user != null) authenticationResponse.setToken(jwtService.generateToken(user));
+        if (user != null)
+            authenticationResponse.setToken(jwtService.generateToken(roleClaimMap, user));
         return authenticationResponse;
     }
 }
